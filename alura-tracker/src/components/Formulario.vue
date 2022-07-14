@@ -1,35 +1,36 @@
 <template>
     <div class="box">
         <div class="columns">
-            <div class="columnn is-8" role="form" aria-label="Formulário para criação de uma nova tarefa">
-                <input type="text" class="input" placeholder="Qual tarefa você deseja iniciar?">
+            <div class="column is-8" role="form" aria-label="Formulário para criação de uma nova tarefa">
+                <input type="text" class="input" placeholder="Qual tarefa você deseja iniciar?" v-model="descricao" />
             </div>
-        </div>
-        <div class="column">
-            <section>
-                <strong>00:00:00</strong>
-            </section>
-             <button class="button">
-                <span class="icon">
-                    <i class="fas fa-play"></i>
-                </span>
-                <span>play</span>
-            </button>
-            <button class="button">
-                <span class="icon">
-                    <i class="fas fa-stop"></i>
-                </span>
-                <span>stop</span>
-            </button>
+            <div class="column">
+                <Temporizador @aoTemporizadorFinalizado="finalizarTarefa" />
+            </div>
         </div>
     </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import Temporizador from "./Temporizador.vue";
 
 export default defineComponent({
-    name:'Formulário'
+    name: "Formulario-Cronometro",
+    data() {
+        return {
+            descricao: ''
+        };
+    },
+    methods: {
+        finalizarTarefa(tempoDecorrido: number): void{
+            console.log(tempoDecorrido)
+            console.log(this.descricao)
+            this.descricao = ''
+        }
+    },
+    
+    components: { Temporizador }
 })
 
 </script>
