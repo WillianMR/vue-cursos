@@ -3,12 +3,31 @@ import Tarefas from "../views/Tarefas.vue"
 import Projetos from "../views/Projetos.vue"
 import Lista from "../views/Projetos/Lista.vue"
 import Formulario from "../views/Projetos/Formulario.vue"
+import FormularioTarefa from "../views/Tarefas/Formulario.vue"
+import ListaTarefa from "../views/Tarefas/Lista.vue"
 
 const rotas: RouteRecordRaw[] = [
     {
         path: '/',
-        name: 'Tarefas',
-        component: Tarefas
+        component: Tarefas,
+        children: [
+            {
+                path: '',
+                name: 'Tarefas',
+                component: ListaTarefa
+            },
+            {
+                path: 'nova',
+                name: 'Nova Tarefa',
+                component: FormularioTarefa
+            },
+            {
+                path: ':id',
+                name: 'Atualizar Tarefa',
+                component: FormularioTarefa,
+                props: true
+            },
+        ]
     },
     {
         path: '/projetos',
