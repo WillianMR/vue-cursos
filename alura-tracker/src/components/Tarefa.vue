@@ -8,7 +8,7 @@
                 <Cronometro :tempoEmSegundos="tarefa.duracaoEmSegundos" />
             </div>
             <div class="column is-2">
-                {{tarefa.projeto? tarefa.projeto.nome : "Sem projeto"}}
+                {{tarefa.projeto?.nome || "Sem projeto"}}
             </div>
             <div class="column is-2">
                 <router-link :to="`/${tarefa.id}`" class="button">
@@ -34,10 +34,13 @@ import Cronometro from "./Cronometro.vue";
 import Box from "./Box.vue";
 import { REMOVE_TAREFA } from "@/store/tipo-mutacoes";
 import { useStore } from '@/store';
+import { TipoNotificacao } from "@/interfaces/INotificacao";
+import { notificacaoMixin } from "@/mixins/notificar";
 
 export default defineComponent({
     name:'Tarefa-Realizada',
     components: { Cronometro, Box },
+    mixins: [notificacaoMixin],
     props: {
         tarefa: {
             type: Object as PropType<ITarefa>,
@@ -53,6 +56,7 @@ export default defineComponent({
     methods: {
         excluir (id:string){
             this.store.commit(REMOVE_TAREFA,id)
+            this.notificar(TipoNotificacao.FALHA,"Pronto","Tarefa excluída com sucesso!")
         }
     }
 })

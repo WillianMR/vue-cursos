@@ -30,6 +30,8 @@ import { computed, defineComponent } from "vue";
 import { useStore } from '@/store';
 import Temporizador from "../../components/Temporizador.vue";
 import { ATUALIZA_TAREFA } from "@/store/tipo-mutacoes";
+import useNotificador from '@/hooks/notificador'
+import { TipoNotificacao } from "@/interfaces/INotificacao";
 
 export default defineComponent({
     name: "Formulario-Tarefa",
@@ -62,6 +64,7 @@ export default defineComponent({
                 duracaoEmSegundos: tempoDecorrido,
                 projeto: projeto
             })
+            this.notificar(TipoNotificacao.SUCESSO,"Pronto","Tarefa adicionada com sucesso!")
 
 
             this.$router.push('/')
@@ -75,14 +78,17 @@ export default defineComponent({
                 tarefa.projeto = projeto
                 this.store.commit(ATUALIZA_TAREFA, tarefa)
             }
+            this.notificar(TipoNotificacao.ATENCAO,"Pronto","Tarefa atualizada com sucesso!")
             this.$router.push('/')
         }
     },
     setup() {
         const store = useStore()
+        const { notificar } = useNotificador()
         return {
             projetos: computed(() => store.state.projetos),
-            store
+            store,
+            notificar
         }
     },
     components: { Temporizador }

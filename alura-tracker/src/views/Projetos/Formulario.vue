@@ -16,7 +16,8 @@
 
 <script lang="ts">
 import { TipoNotificacao } from '@/interfaces/INotificacao';
-import { notificacaoMixin } from '@/mixins/notificar';
+// import { notificacaoMixin } from '@/mixins/notificar';
+import useNotificador from '@/hooks/notificador'
 import { useStore } from '@/store';
 import { ADICIONA_PROJETO } from '@/store/tipo-mutacoes';
 import { ALTERA_PROJETO } from '@/store/tipo-mutacoes';
@@ -30,7 +31,7 @@ export default defineComponent({
             type: String
         }
     },
-    mixins: [notificacaoMixin],
+    // mixins: [notificacaoMixin],
     mounted (){
         if(this.id){
             const projeto = this.store.state.projetos.find(proj => proj.id == this.id)
@@ -49,19 +50,22 @@ export default defineComponent({
                     id: this.id,
                     nome: this.nomeDoProjeto
                 })
+                this.notificar(TipoNotificacao.ATENCAO,"Pronto","Projeto atualizado com sucesso!")
             } else {
                 this.store.commit(ADICIONA_PROJETO, this.nomeDoProjeto)
+                this.notificar(TipoNotificacao.SUCESSO,"Pronto","Projeto adicionado com sucesso!")
             }
             this.nomeDoProjeto = ''
-            this.notificar(TipoNotificacao.SUCESSO,"Pronto","Projeto adicionado com sucesso!")
             this.$router.push('/projetos')
         },
         
     },
     setup () {
         const store = useStore()
+        const { notificar } = useNotificador()
         return {
-            store
+            store,
+            notificar
         }
     }
 })
