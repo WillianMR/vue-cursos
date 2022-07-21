@@ -47,7 +47,6 @@ import { TipoNotificacao } from '@/interfaces/INotificacao';
 import { notificacaoMixin } from '@/mixins/notificar';
 import { useStore } from '@/store';
 import { OBTER_PROJETOS, REMOVER_PROJETO } from '@/store/tipo-acoes';
-import { EXCLUIR_PROJETO } from '@/store/tipo-mutacoes';
 import { computed, defineComponent } from 'vue';
 
 

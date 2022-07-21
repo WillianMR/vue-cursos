@@ -36,6 +36,7 @@ import { REMOVE_TAREFA } from "@/store/tipo-mutacoes";
 import { useStore } from '@/store';
 import { TipoNotificacao } from "@/interfaces/INotificacao";
 import { notificacaoMixin } from "@/mixins/notificar";
+import { REMOVER_TAREFA } from "@/store/tipo-acoes";
 
 export default defineComponent({
     name:'Tarefa-Realizada',
@@ -55,8 +56,13 @@ export default defineComponent({
     },
     methods: {
         excluir (id:string){
-            this.store.commit(REMOVE_TAREFA,id)
-            this.notificar(TipoNotificacao.FALHA,"Pronto","Tarefa excluída com sucesso!")
+            this.store.dispatch(REMOVER_TAREFA,id)
+            .then(() => {
+                this.notificar(TipoNotificacao.SUCESSO,"Pronto","Tarefa excluída com sucesso!")
+            })
+            .catch(() => {
+                this.notificar(TipoNotificacao.FALHA,"Ops","Não conseguimos apagar a tarefa")
+            })
         }
     }
 })

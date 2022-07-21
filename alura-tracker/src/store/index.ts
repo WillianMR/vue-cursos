@@ -4,8 +4,8 @@ import IProjeto from "@/interfaces/IProjeto";
 import ITarefa from "@/interfaces/ITarefa";
 import { InjectionKey } from "vue";
 import { createStore, Store, useStore as vuexUseStore } from "vuex";
-import { ALTERAR_PROJETO, CADASTRAR_PROJETO, OBTER_PROJETOS, REMOVER_PROJETO } from "./tipo-acoes";
-import { ADICIONA_PROJETO, ADICIONA_TAREFA, ALTERA_PROJETO, ATUALIZA_TAREFA, DEFINIR_PROJETO, EXCLUIR_PROJETO, NOTIFICAR, REMOVE_TAREFA } from "./tipo-mutacoes";
+import { ALTERAR_PROJETO, ALTERAR_TAREFA, CADASTRAR_PROJETO, CADASTRAR_TAREFA, OBTER_PROJETOS, OBTER_TAREFAS, REMOVER_PROJETO, REMOVER_TAREFA } from "./tipo-acoes";
+import { ADICIONA_PROJETO, ADICIONA_TAREFA, ALTERA_PROJETO, ATUALIZA_TAREFA, DEFINIR_PROJETOS, DEFINIR_TAREFAS, EXCLUIR_PROJETO, NOTIFICAR, REMOVE_TAREFA } from "./tipo-mutacoes";
 
 interface Estado {
     projetos: IProjeto[],
@@ -35,21 +35,14 @@ export const store = createStore<Estado>({
         [EXCLUIR_PROJETO](state, id:string) {
             state.projetos = state.projetos.filter(proj => proj.id != id)
         },
-        [DEFINIR_PROJETO](state, projetos: IProjeto[]) {
+        [DEFINIR_PROJETOS](state, projetos: IProjeto[]) {
             state.projetos = projetos
         },
-        [ADICIONA_TAREFA](state:any, dadosTarefa:ITarefa) {
-            const tarefa = {
-                id: new Date().toISOString(),
-                descricao: dadosTarefa.descricao,
-                duracaoEmSegundos: dadosTarefa.duracaoEmSegundos,
-            } as ITarefa
-
-            if(dadosTarefa.projeto){
-                tarefa.projeto = dadosTarefa.projeto
-            }
-           
-            state.tarefas.push(tarefa)
+        [DEFINIR_TAREFAS](state, tarefas: ITarefa[]) {
+            state.tarefas = tarefas
+        },
+        [ADICIONA_TAREFA](state, dadosTarefa:ITarefa) {
+            state.tarefas.push(dadosTarefa)
         },
         [ATUALIZA_TAREFA](state, tarefa: ITarefa) {
             const index = state.tarefas.findIndex(trf => trf.id == tarefa.id)
@@ -70,7 +63,7 @@ export const store = createStore<Estado>({
     actions: {
         [OBTER_PROJETOS]({commit}){
             clienteHttp.get('projetos')
-                .then(resposta => commit(DEFINIR_PROJETO,resposta.data))
+                .then(resposta => commit(DEFINIR_PROJETOS,resposta.data))
         },
         [CADASTRAR_PROJETO](contexto, nomeDoProjeto:string){
             return clienteHttp.post('/projetos', {
@@ -83,6 +76,22 @@ export const store = createStore<Estado>({
         [REMOVER_PROJETO]({commit}, id:string){
             return clienteHttp.delete(`/projetos/${id}`)
             .then(() => commit(EXCLUIR_PROJETO,id))
+        },
+        [OBTER_TAREFAS]({commit}){
+            clienteHttp.get('tarefas')
+            .then(resposta => commit(DEFINIR_TAREFAS,resposta.data))
+        },
+        [CADASTRAR_TAREFA]({commit}, tarefa:ITarefa){
+            return clienteHttp.post('/tarefas', tarefa)
+                .then(resposta => commit(ADICIONA_TAREFA,resposta.data))
+        },
+        [ALTERAR_TAREFA]({commit}, tarefa:ITarefa){
+            return clienteHttp.put(`/tarefas/${tarefa.id}`, tarefa)
+                .then(resposta => commit(DEFINIR_TAREFAS,resposta.data))
+        },
+        [REMOVER_TAREFA]({commit}, id:string){
+            return clienteHttp.delete(`/tarefas/${id}`)
+            .then(() => commit(REMOVE_TAREFA,id))
         },
     }
 })

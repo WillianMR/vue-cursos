@@ -8,5 +8,12 @@
       "id": 3,
       "nome": "React"
     }
+  ],
+  "tarefas": [
+    {
+      "id": 1,
+      "duracaoEmSegundos": 120,
+      "descricao": "Usando APIs"
+    }
   ]
 }
