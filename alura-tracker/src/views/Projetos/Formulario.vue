@@ -22,6 +22,7 @@ import { useStore } from '@/store';
 import { ADICIONA_PROJETO } from '@/store/tipo-mutacoes';
 import { ALTERA_PROJETO } from '@/store/tipo-mutacoes';
 import { defineComponent } from 'vue';
+import { ALTERAR_PROJETO, CADASTRAR_PROJETO } from '@/store/tipo-acoes';
 
 
 export default defineComponent({
@@ -46,16 +47,26 @@ export default defineComponent({
     methods: {
         salvar () {
             if (this.id) {
-                this.store.commit(ALTERA_PROJETO, {
+                this.store.dispatch(ALTERAR_PROJETO, {
                     id: this.id,
                     nome: this.nomeDoProjeto
                 })
-                this.notificar(TipoNotificacao.ATENCAO,"Pronto","Projeto atualizado com sucesso!")
+                    .then(() => {
+                        this.notificar(TipoNotificacao.SUCESSO,"Pronto","Projeto atualizado com sucesso!")
+                    })
+                    .catch(() => {
+                        this.notificar(TipoNotificacao.FALHA,"Ops","Aconteceu algum erro na API!")
+                    })
             } else {
-                this.store.commit(ADICIONA_PROJETO, this.nomeDoProjeto)
-                this.notificar(TipoNotificacao.SUCESSO,"Pronto","Projeto adicionado com sucesso!")
+                this.store.dispatch(CADASTRAR_PROJETO, this.nomeDoProjeto)
+                    .then(() => {
+                        this.notificar(TipoNotificacao.SUCESSO,"Pronto","Projeto adicionado com sucesso!")
+                        this.nomeDoProjeto = ''
+                    })
+                    .catch(() => {
+                        this.notificar(TipoNotificacao.FALHA,"Ops","Aconteceu algum problema!")
+                    })
             }
-            this.nomeDoProjeto = ''
             this.$router.push('/projetos')
         },
         
