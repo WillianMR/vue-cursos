@@ -87,7 +87,7 @@ export const store = createStore<Estado>({
         },
         [ALTERAR_TAREFA]({commit}, tarefa:ITarefa){
             return clienteHttp.put(`/tarefas/${tarefa.id}`, tarefa)
-                .then(resposta => commit(DEFINIR_TAREFAS,resposta.data))
+                .then(resposta => commit(ATUALIZA_TAREFA,resposta.data))
         },
         [REMOVER_TAREFA]({commit}, id:string){
             return clienteHttp.delete(`/tarefas/${id}`)

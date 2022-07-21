@@ -25,11 +25,9 @@
 </template>
 
 <script lang="ts">
-import { ADICIONA_TAREFA } from "@/store/tipo-mutacoes";
 import { computed, defineComponent } from "vue";
 import { useStore } from '@/store';
 import Temporizador from "../../components/Temporizador.vue";
-import { ATUALIZA_TAREFA } from "@/store/tipo-mutacoes";
 import useNotificador from '@/hooks/notificador'
 import { TipoNotificacao } from "@/interfaces/INotificacao";
 import { ALTERAR_TAREFA, CADASTRAR_TAREFA, OBTER_PROJETOS } from "@/store/tipo-acoes";

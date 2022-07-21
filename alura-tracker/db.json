@@ -13,7 +13,12 @@
     {
       "id": 1,
       "duracaoEmSegundos": 120,
-      "descricao": "Usando APIs"
+      "descricao": "Usando API com JSON"
+    },
+    {
+      "descricao": "Vendo Possibilidades",
+      "duracaoEmSegundos": 4,
+      "id": 2
     }
   ]
 }

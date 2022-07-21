@@ -1,6 +1,6 @@
 <template>
-    <Box>
-        <div class="columns">
+    <Box >
+        <div class="columns clicavel" @click="tarefaClicada">
             <div class="column is-5">
                 {{tarefa.descricao || "Tarefa sem descrição"}}
             </div>
@@ -32,7 +32,6 @@ import ITarefa from "@/interfaces/ITarefa";
 import { defineComponent, PropType } from "vue";
 import Cronometro from "./Cronometro.vue";
 import Box from "./Box.vue";
-import { REMOVE_TAREFA } from "@/store/tipo-mutacoes";
 import { useStore } from '@/store';
 import { TipoNotificacao } from "@/interfaces/INotificacao";
 import { notificacaoMixin } from "@/mixins/notificar";
@@ -41,6 +40,7 @@ import { REMOVER_TAREFA } from "@/store/tipo-acoes";
 export default defineComponent({
     name:'Tarefa-Realizada',
     components: { Cronometro, Box },
+    emits: ['aoTarefaClicada'],
     mixins: [notificacaoMixin],
     props: {
         tarefa: {
@@ -63,8 +63,17 @@ export default defineComponent({
             .catch(() => {
                 this.notificar(TipoNotificacao.FALHA,"Ops","Não conseguimos apagar a tarefa")
             })
-        }
+        },
+        tarefaClicada (): void{
+            this.$emit('aoTarefaClicada', this.tarefa)
+        },
+
     }
 })
 </script>
 
+<style scoped>
+.clicavel{
+    cursor: pointer;
+}
+</style>
