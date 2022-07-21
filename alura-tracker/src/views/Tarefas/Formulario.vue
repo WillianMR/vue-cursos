@@ -25,7 +25,6 @@
 </template>
 
 <script lang="ts">
-import { key } from "@/store";
 import { ADICIONA_TAREFA } from "@/store/tipo-mutacoes";
 import { computed, defineComponent } from "vue";
 import { useStore } from '@/store';
