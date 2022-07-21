@@ -1,14 +1,16 @@
 <template>
     <Box >
-        <div class="columns clicavel" @click="tarefaClicada">
-            <div class="column is-5">
-                {{tarefa.descricao || "Tarefa sem descrição"}}
-            </div>
-            <div class="column">
-                <Cronometro :tempoEmSegundos="tarefa.duracaoEmSegundos" />
-            </div>
-            <div class="column is-2">
-                {{tarefa.projeto?.nome || "Sem projeto"}}
+        <div class="columns" >
+            <div class="column is-10 is-flex clicavel" @click="tarefaClicada">
+                <div class="column is-5">
+                    {{tarefa.descricao || "Tarefa sem descrição"}}
+                </div>
+                <div class="column">
+                    <Cronometro :tempoEmSegundos="tarefa.duracaoEmSegundos" />
+                </div>
+                <div class="column is-2">
+                    {{tarefa.projeto?.nome || "Sem projeto"}}
+                </div>
             </div>
             <div class="column is-2">
                 <router-link :to="`/${tarefa.id}`" class="button">

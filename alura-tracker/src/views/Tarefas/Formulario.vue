@@ -47,7 +47,7 @@ export default defineComponent({
     },
     mounted (){
         if(this.id){
-            const tarefa = this.store.state.tarefas.find(trf => trf.id == this.id)
+            const tarefa = this.store.state.tarefa.tarefas.find(trf => trf.id == this.id)
             if(tarefa != undefined){
                 this.descricao = tarefa.descricao
                 this.idProjeto = tarefa.projeto? tarefa.projeto.id : ''
@@ -56,7 +56,7 @@ export default defineComponent({
     },
     methods: {
         finalizarTarefa(tempoDecorrido: number): void {
-            let projeto = this.store.state.projetos.find(proj => proj.id == this.idProjeto)
+            let projeto = this.store.state.projeto.projetos.find(proj => proj.id == this.idProjeto)
             if(projeto == undefined){
                 this.store.dispatch(CADASTRAR_TAREFA, {
                     descricao: this.descricao,
@@ -88,8 +88,8 @@ export default defineComponent({
         },
 
         atualizar (){
-            const tarefa = this.store.state.tarefas.find(trf => trf.id == this.id)
-            let projeto = this.store.state.projetos.find(proj => proj.id == this.idProjeto)
+            const tarefa = this.store.state.tarefa.tarefas.find(trf => trf.id == this.id)
+            let projeto = this.store.state.projeto.projetos.find(proj => proj.id == this.idProjeto)
             if(tarefa != undefined){
                 tarefa.descricao = this.descricao
                 tarefa.projeto = projeto
@@ -119,7 +119,7 @@ export default defineComponent({
         store.dispatch(OBTER_PROJETOS)
         const { notificar } = useNotificador()
         return {
-            projetos: computed(() => store.state.projetos),
+            projetos: computed(() => store.state.projeto.projetos),
             store,
             notificar
         }

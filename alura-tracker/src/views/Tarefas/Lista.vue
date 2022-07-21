@@ -74,7 +74,7 @@ export default defineComponent({
         store.dispatch(OBTER_TAREFAS)
         const { notificar } = useNotificador()
         return {
-            tarefas: computed(() => store.state.tarefas),
+            tarefas: computed(() => store.state.tarefa.tarefas),
             store,
             notificar
         }
