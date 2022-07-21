@@ -48,16 +48,15 @@ export default defineComponent({
     mounted (){
         if(this.id){
             const tarefa = this.store.state.tarefas.find(trf => trf.id == this.id)
-            this.descricao = tarefa.descricao
-            this.idProjeto = tarefa.projeto? tarefa.projeto.id : ''
+            if(tarefa != undefined){
+                this.descricao = tarefa.descricao
+                this.idProjeto = tarefa.projeto? tarefa.projeto.id : ''
+            }
         }
     },
     methods: {
         finalizarTarefa(tempoDecorrido: number): void {
             let projeto = this.store.state.projetos.find(proj => proj.id == this.idProjeto)
-            if(projeto === undefined){
-                projeto = null
-            }
 
             this.store.commit(ADICIONA_TAREFA, {
                 descricao: this.descricao,
@@ -72,17 +71,16 @@ export default defineComponent({
         atualizar (){
             const tarefa = this.store.state.tarefas.find(trf => trf.id == this.id)
             let projeto = this.store.state.projetos.find(proj => proj.id == this.idProjeto)
-            if(projeto === undefined){
-                projeto = null
+            if(tarefa != undefined){
+                tarefa.descricao = this.descricao
+                tarefa.projeto = projeto
+                this.store.commit(ATUALIZA_TAREFA, tarefa)
             }
-            tarefa.descricao = this.descricao
-            tarefa.projeto = projeto
-            this.store.commit(ATUALIZA_TAREFA, tarefa)
             this.$router.push('/')
         }
     },
     setup() {
-        const store = useStore(key)
+        const store = useStore()
         return {
             projetos: computed(() => store.state.projetos),
             store
