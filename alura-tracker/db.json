@@ -22,15 +22,6 @@
         "id": 2,
         "nome": "TypeScript 3.0"
       }
-    },
-    {
-      "descricao": "Teste",
-      "duracaoEmSegundos": 2,
-      "projeto": {
-        "id": 4,
-        "nome": "teste 2.0"
-      },
-      "id": 2
     }
   ]
 }
