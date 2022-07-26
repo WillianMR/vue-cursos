@@ -36,41 +36,61 @@ import Cronometro from "./Cronometro.vue";
 import Box from "./Box.vue";
 import { useStore } from '@/store';
 import { TipoNotificacao } from "@/interfaces/INotificacao";
-import { notificacaoMixin } from "@/mixins/notificar";
+// import { notificacaoMixin } from "@/mixins/notificar";
+import useNotificador from '@/hooks/notificador'
 import { REMOVER_TAREFA } from "@/store/tipo-acoes";
 
 export default defineComponent({
     name:'Tarefa-Realizada',
     components: { Cronometro, Box },
     emits: ['aoTarefaClicada'],
-    mixins: [notificacaoMixin],
+    // mixins: [notificacaoMixin],
     props: {
         tarefa: {
             type: Object as PropType<ITarefa>,
             required: true
         }
     },
-    setup () {
+    setup (props,{emit}) {
         const store = useStore()
-        return {
-            store
-        }
-    },
-    methods: {
-        excluir (id:string){
-            this.store.dispatch(REMOVER_TAREFA,id)
+        const { notificar } = useNotificador()
+
+        const excluir = (id:string) => {
+            store.dispatch(REMOVER_TAREFA,id)
             .then(() => {
-                this.notificar(TipoNotificacao.SUCESSO,"Pronto","Tarefa excluída com sucesso!")
+                notificar(TipoNotificacao.SUCESSO,"Pronto","Tarefa excluída com sucesso!")
             })
             .catch(() => {
-                this.notificar(TipoNotificacao.FALHA,"Ops","Não conseguimos apagar a tarefa")
+                notificar(TipoNotificacao.FALHA,"Ops","Não conseguimos apagar a tarefa")
             })
-        },
-        tarefaClicada (): void{
-            this.$emit('aoTarefaClicada', this.tarefa)
-        },
+        }
 
-    }
+        const tarefaClicada =  () => {
+            emit('aoTarefaClicada', props.tarefa)
+        }
+
+
+        return {
+            // store
+            excluir,
+            tarefaClicada
+        }
+    },
+    // methods: {
+    //     excluir (id:string){
+    //         this.store.dispatch(REMOVER_TAREFA,id)
+    //         .then(() => {
+    //             this.notificar(TipoNotificacao.SUCESSO,"Pronto","Tarefa excluída com sucesso!")
+    //         })
+    //         .catch(() => {
+    //             this.notificar(TipoNotificacao.FALHA,"Ops","Não conseguimos apagar a tarefa")
+    //         })
+    //     },
+    //     tarefaClicada (): void{
+    //         this.$emit('aoTarefaClicada', this.tarefa)
+    //     },
+
+    // }
 })
 </script>
 

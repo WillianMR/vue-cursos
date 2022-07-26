@@ -2,27 +2,26 @@
   "projetos": [
     {
       "id": 2,
-      "nome": "TypeScript"
+      "nome": "TypeScript 3.0"
     },
     {
       "id": 3,
       "nome": "React"
     },
     {
-      "nome": "teste",
-      "id": 4
+      "id": 4,
+      "nome": "teste 2.0"
     }
   ],
   "tarefas": [
     {
       "id": 1,
       "duracaoEmSegundos": 120,
-      "descricao": "Usando API com JSON"
-    },
-    {
-      "descricao": "Vendo Possibilidades",
-      "duracaoEmSegundos": 4,
-      "id": 2
+      "descricao": "Usando API com JSON",
+      "projeto": {
+        "id": 2,
+        "nome": "TypeScript 3.0"
+      }
     }
   ]
 }

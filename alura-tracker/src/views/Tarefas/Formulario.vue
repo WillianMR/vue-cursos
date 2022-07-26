@@ -25,12 +25,13 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from "vue";
+import { computed, defineComponent, ref } from "vue";
 import { useStore } from '@/store';
 import Temporizador from "../../components/Temporizador.vue";
 import useNotificador from '@/hooks/notificador'
 import { TipoNotificacao } from "@/interfaces/INotificacao";
 import { ALTERAR_TAREFA, CADASTRAR_TAREFA, OBTER_PROJETOS } from "@/store/tipo-acoes";
+import { useRouter } from "vue-router";
 
 export default defineComponent({
     name: "Formulario-Tarefa",
@@ -39,89 +40,165 @@ export default defineComponent({
             type: String
         }
     },
-    data() {
-        return {
-            descricao: '',
-            idProjeto: ''
-        };
-    },
-    mounted (){
-        if(this.id){
-            const tarefa = this.store.state.tarefa.tarefas.find(trf => trf.id == this.id)
+    // data() {
+    //     return {
+    //         descricao: '',
+    //         idProjeto: ''
+    //     };
+    // },
+    // mounted (){
+    //     if(this.id){
+    //         const tarefa = this.store.state.tarefa.tarefas.find(trf => trf.id == this.id)
+    //         if(tarefa != undefined){
+    //             this.descricao = tarefa.descricao
+    //             this.idProjeto = tarefa.projeto? tarefa.projeto.id : ''
+    //         }
+    //     }
+    // },
+    // methods: {
+    //     finalizarTarefa(tempoDecorrido: number): void {
+    //         let projeto = this.store.state.projeto.projetos.find(proj => proj.id == this.idProjeto)
+    //         if(projeto == undefined){
+    //             this.store.dispatch(CADASTRAR_TAREFA, {
+    //                 descricao: this.descricao,
+    //                 duracaoEmSegundos: tempoDecorrido,
+    //                 projeto: projeto
+    //             })
+    //             .then(() => {
+    //                 this.notificar(TipoNotificacao.ATENCAO,"Pronto","Tarefa sem projeto adicionada!")
+    //             })
+    //             .catch(() => {
+    //                 this.notificar(TipoNotificacao.FALHA,"Ops","Não conseguimos adicionar a tarefa!")
+    //             })
+    //         }else{
+    //             this.store.dispatch(CADASTRAR_TAREFA, {
+    //                 descricao: this.descricao,
+    //                 duracaoEmSegundos: tempoDecorrido,
+    //                 projeto: projeto
+    //             })
+    //             .then(() => {
+    //                 this.notificar(TipoNotificacao.SUCESSO,"Pronto","Tarefa completa adicionada!")
+    //             })
+    //             .catch(() => {
+    //                 this.notificar(TipoNotificacao.FALHA,"Ops","Não conseguimos adicionar a tarefa!")
+    //             })
+                
+    //         }
+
+    //         this.$router.push('/')
+    //     },
+
+    //     atualizar (){
+    //         const tarefa = this.store.state.tarefa.tarefas.find(trf => trf.id == this.id)
+    //         let projeto = this.store.state.projeto.projetos.find(proj => proj.id == this.idProjeto)
+    //         if(tarefa != undefined){
+    //             tarefa.descricao = this.descricao
+    //             tarefa.projeto = projeto
+    //             if(projeto == undefined){
+    //                 this.store.dispatch(ALTERAR_TAREFA, tarefa)
+    //                     .then(() => {
+    //                         this.notificar(TipoNotificacao.ATENCAO,"Pronto","Tarefa atualizada sem projeto!")
+    //                     })
+    //                     .catch(() => {
+    //                         this.notificar(TipoNotificacao.FALHA,"Ops","Houve algum problema com a API!")
+    //                     })
+    //             } else {
+    //                 this.store.dispatch(ALTERAR_TAREFA, tarefa)
+    //                     .then(() => {
+    //                         this.notificar(TipoNotificacao.SUCESSO,"Pronto","Tarefa atualizada com sucesso!")
+    //                     })
+    //                     .catch(() => {
+    //                         this.notificar(TipoNotificacao.FALHA,"Ops","Houve algum problema com a API!")
+    //                     })
+    //             }
+    //         }
+    //         this.$router.push('/')
+    //     }
+    // },
+    setup( props ) {
+
+        const router = useRouter()
+        const descricao = ref("")
+        const idProjeto = ref("")
+        const store = useStore()
+        store.dispatch(OBTER_PROJETOS)
+        const { notificar } = useNotificador()
+
+        if(props.id){
+            const tarefa = store.state.tarefa.tarefas.find(trf => trf.id == props.id)
             if(tarefa != undefined){
-                this.descricao = tarefa.descricao
-                this.idProjeto = tarefa.projeto? tarefa.projeto.id : ''
+                descricao.value = tarefa.descricao
+                idProjeto.value = tarefa.projeto? tarefa.projeto.id : ''
             }
         }
-    },
-    methods: {
-        finalizarTarefa(tempoDecorrido: number): void {
-            let projeto = this.store.state.projeto.projetos.find(proj => proj.id == this.idProjeto)
+
+        const finalizarTarefa = (tempoDecorrido: number) => {
+            let projeto = store.state.projeto.projetos.find(proj => proj.id == idProjeto.value)
             if(projeto == undefined){
-                this.store.dispatch(CADASTRAR_TAREFA, {
-                    descricao: this.descricao,
+                store.dispatch(CADASTRAR_TAREFA, {
+                    descricao: descricao.value,
                     duracaoEmSegundos: tempoDecorrido,
                     projeto: projeto
                 })
                 .then(() => {
-                    this.notificar(TipoNotificacao.ATENCAO,"Pronto","Tarefa sem projeto adicionada!")
+                    notificar(TipoNotificacao.ATENCAO,"Pronto","Tarefa sem projeto adicionada!")
                 })
                 .catch(() => {
-                    this.notificar(TipoNotificacao.FALHA,"Ops","Não conseguimos adicionar a tarefa!")
+                    notificar(TipoNotificacao.FALHA,"Ops","Não conseguimos adicionar a tarefa!")
                 })
             }else{
-                this.store.dispatch(CADASTRAR_TAREFA, {
-                    descricao: this.descricao,
+                store.dispatch(CADASTRAR_TAREFA, {
+                    descricao: descricao.value,
                     duracaoEmSegundos: tempoDecorrido,
                     projeto: projeto
                 })
                 .then(() => {
-                    this.notificar(TipoNotificacao.SUCESSO,"Pronto","Tarefa completa adicionada!")
+                    notificar(TipoNotificacao.SUCESSO,"Pronto","Tarefa completa adicionada!")
                 })
                 .catch(() => {
-                    this.notificar(TipoNotificacao.FALHA,"Ops","Não conseguimos adicionar a tarefa!")
+                    notificar(TipoNotificacao.FALHA,"Ops","Não conseguimos adicionar a tarefa!")
                 })
                 
             }
 
-            this.$router.push('/')
-        },
+            router.push('/')
+        }
 
-        atualizar (){
-            const tarefa = this.store.state.tarefa.tarefas.find(trf => trf.id == this.id)
-            let projeto = this.store.state.projeto.projetos.find(proj => proj.id == this.idProjeto)
+        const atualizar = () => {
+            const tarefa = store.state.tarefa.tarefas.find(trf => trf.id == props.id)
+            let projeto = store.state.projeto.projetos.find(proj => proj.id == idProjeto.value)
             if(tarefa != undefined){
-                tarefa.descricao = this.descricao
+                tarefa.descricao = descricao.value
                 tarefa.projeto = projeto
                 if(projeto == undefined){
-                    this.store.dispatch(ALTERAR_TAREFA, tarefa)
+                    store.dispatch(ALTERAR_TAREFA, tarefa)
                         .then(() => {
-                            this.notificar(TipoNotificacao.ATENCAO,"Pronto","Tarefa atualizada sem projeto!")
+                            notificar(TipoNotificacao.ATENCAO,"Pronto","Tarefa atualizada sem projeto!")
                         })
                         .catch(() => {
-                            this.notificar(TipoNotificacao.FALHA,"Ops","Houve algum problema com a API!")
+                            notificar(TipoNotificacao.FALHA,"Ops","Houve algum problema com a API!")
                         })
                 } else {
-                    this.store.dispatch(ALTERAR_TAREFA, tarefa)
+                    store.dispatch(ALTERAR_TAREFA, tarefa)
                         .then(() => {
-                            this.notificar(TipoNotificacao.SUCESSO,"Pronto","Tarefa atualizada com sucesso!")
+                            notificar(TipoNotificacao.SUCESSO,"Pronto","Tarefa atualizada com sucesso!")
                         })
                         .catch(() => {
-                            this.notificar(TipoNotificacao.FALHA,"Ops","Houve algum problema com a API!")
+                            notificar(TipoNotificacao.FALHA,"Ops","Houve algum problema com a API!")
                         })
                 }
             }
-            this.$router.push('/')
+            router.push('/')
         }
-    },
-    setup() {
-        const store = useStore()
-        store.dispatch(OBTER_PROJETOS)
-        const { notificar } = useNotificador()
+
         return {
             projetos: computed(() => store.state.projeto.projetos),
             store,
-            notificar
+            notificar,
+            descricao,
+            idProjeto,
+            finalizarTarefa,
+            atualizar
         }
     },
     components: { Temporizador }
